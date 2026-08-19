@@ -1800,7 +1800,7 @@ mod_generator!(
 mod_generator!(
     v150,
     v132::build_emulation,
-    header_initializer_with_zstd_priority,
+    header_initializer_with_zstd_priority_v150,
     [
         (
             MacOS,
@@ -1833,7 +1833,7 @@ mod_generator!(
 mod_generator!(
     v151,
     v132::build_emulation,
-    header_initializer_with_zstd_priority,
+    header_initializer_with_zstd_priority_v150,
     [
         (
             MacOS,
@@ -1866,7 +1866,7 @@ mod_generator!(
 mod_generator!(
     v152,
     v132::build_emulation,
-    header_initializer_with_zstd_priority,
+    header_initializer_with_zstd_priority_v150,
     [
         (
             MacOS,
