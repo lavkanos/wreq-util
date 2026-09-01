@@ -40,6 +40,17 @@ macro_rules! tls_options {
             .curves($curves)
             .alps_use_new_codepoint(true))
     };
+    // Chrome 150+: same as (7) plus ML-DSA sigalgs and the trust_anchors extension.
+    (8, $curves:expr) => {
+        tls_options!(@build ChromeTlsConfig::builder()
+            .permute_extensions(true)
+            .enable_ech_grease(true)
+            .pre_shared_key(true)
+            .curves($curves)
+            .alps_use_new_codepoint(true)
+            .sigalgs_list(SIGALGS_LIST_V150)
+            .requested_trust_anchors(true))
+    };
 }
 
 pub const CURVES_1: &str = join!(":", "X25519", "P-256", "P-384");
@@ -77,6 +88,28 @@ pub const SIGALGS_LIST: &str = join!(
     "rsa_pkcs1_sha512"
 );
 
+pub const SIGALGS_LIST_V150: &str = join!(
+    ":",
+    "mldsa44",
+    "mldsa65",
+    "mldsa87",
+    "ecdsa_secp256r1_sha256",
+    "rsa_pss_rsae_sha256",
+    "rsa_pkcs1_sha256",
+    "ecdsa_secp384r1_sha384",
+    "rsa_pss_rsae_sha384",
+    "rsa_pkcs1_sha384",
+    "rsa_pss_rsae_sha512",
+    "rsa_pkcs1_sha512"
+);
+
+// Empty by default. With emulation-chromium-pki, Chrome's real anchor IDs; send
+// these only if the client verifies against Chrome's roots (chromium_root_store).
+#[cfg(feature = "emulation-chromium-pki")]
+const CHROME_TRUST_ANCHORS: &[u8] = chromium_root_certs::ENCODED_TRUST_ANCHOR_IDS;
+#[cfg(not(feature = "emulation-chromium-pki"))]
+const CHROME_TRUST_ANCHORS: &[u8] = &[];
+
 pub const CERTIFICATE_COMPRESSORS: &[&'static dyn CertificateCompressor] = &[&BrotliCompressor];
 
 #[derive(TypedBuilder)]
@@ -104,11 +137,14 @@ pub struct ChromeTlsConfig {
 
     #[builder(default = false, setter(into))]
     pre_shared_key: bool,
+
+    #[builder(default = false, setter(into))]
+    requested_trust_anchors: bool,
 }
 
 impl From<ChromeTlsConfig> for TlsOptions {
     fn from(val: ChromeTlsConfig) -> Self {
-        TlsOptions::builder()
+        let builder = TlsOptions::builder()
             .grease_enabled(true)
             .enable_ocsp_stapling(true)
             .enable_signed_cert_timestamps(true)
@@ -123,7 +159,12 @@ impl From<ChromeTlsConfig> for TlsOptions {
             .alps_protocols([val.alps_protos])
             .alps_use_new_codepoint(val.alps_use_new_codepoint)
             .aes_hw_override(true)
-            .certificate_compressors(CERTIFICATE_COMPRESSORS)
-            .build()
+            .certificate_compressors(CERTIFICATE_COMPRESSORS);
+        let builder = if val.requested_trust_anchors {
+            builder.requested_trust_anchors(CHROME_TRUST_ANCHORS)
+        } else {
+            builder
+        };
+        builder.build()
     }
 }

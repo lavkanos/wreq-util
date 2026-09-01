@@ -1795,11 +1795,10 @@ mod_generator!(
     ]
 );
 
-// Chrome 150+ has newer TLS extensions that wreq does not currently expose;
-// v132 is the closest available transport preset.
 mod_generator!(
     v150,
-    v132::build_emulation,
+    tls_options!(8, CURVES_3),
+    http2_options!(3),
     header_initializer_with_zstd_priority_v150,
     [
         (
@@ -1832,7 +1831,8 @@ mod_generator!(
 
 mod_generator!(
     v151,
-    v132::build_emulation,
+    tls_options!(8, CURVES_3),
+    http2_options!(3),
     header_initializer_with_zstd_priority_v150,
     [
         (
@@ -1865,7 +1865,8 @@ mod_generator!(
 
 mod_generator!(
     v152,
-    v132::build_emulation,
+    tls_options!(8, CURVES_3),
+    http2_options!(3),
     header_initializer_with_zstd_priority_v150,
     [
         (
