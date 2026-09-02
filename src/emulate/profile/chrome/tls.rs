@@ -103,11 +103,10 @@ pub const SIGALGS_LIST_V150: &str = join!(
     "rsa_pkcs1_sha512"
 );
 
-// Empty by default. With emulation-chromium-pki, Chrome's real anchor IDs; send
-// these only if the client verifies against Chrome's roots (chromium_root_store).
-#[cfg(feature = "emulation-chromium-pki")]
-const CHROME_TRUST_ANCHORS: &[u8] = chromium_root_certs::ENCODED_TRUST_ANCHOR_IDS;
-#[cfg(not(feature = "emulation-chromium-pki"))]
+// The preset always sends an empty trust_anchors request. Chrome's real anchor
+// IDs are installed only by chrome_pki_client_builder, which pairs them with
+// Chrome's roots, so a populated request can never ship without the roots that
+// verify the chain it invites.
 const CHROME_TRUST_ANCHORS: &[u8] = &[];
 
 pub const CERTIFICATE_COMPRESSORS: &[&'static dyn CertificateCompressor] = &[&BrotliCompressor];

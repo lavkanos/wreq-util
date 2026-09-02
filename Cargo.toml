@@ -27,7 +27,7 @@ emulation-serde = ["dep:serde"]
 emulation-compression = []
 # Send Chrome's real trust_anchor IDs (from chromium-root-certs) instead of an
 # empty request. Needs Chrome's roots on the client via chromium_root_store().
-emulation-chromium-pki = ["dep:chromium-root-certs"]
+emulation-chromium-pki = ["emulation", "dep:chromium-root-certs"]
 
 tower-delay = ["dep:tower", "dep:pin-project-lite", "tokio/time"]
 

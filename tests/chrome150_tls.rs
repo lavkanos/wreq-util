@@ -54,17 +54,22 @@ fn chrome149_is_untouched() {
     );
 }
 
-#[cfg(feature = "emulation-chromium-pki")]
 #[test]
-fn chrome150_sends_chromes_anchor_ids() {
-    // Chrome's 28 anchor IDs encode to 184 bytes (from chromium-root-certs).
+fn chrome150_preset_request_is_empty() {
+    // The preset always sends an empty trust_anchors request. Chrome's real
+    // anchor IDs come only from chrome_pki_client_builder, so a populated
+    // request without the matching roots is not expressible.
     for profile in [
         Emulation::Chrome150,
         Emulation::Chrome151,
         Emulation::Chrome152,
     ] {
-        let tls = tls_of(profile);
-        let ids = tls.requested_trust_anchors.expect("trust_anchors set");
-        assert_eq!(ids.len(), 184, "{profile:?} sends Chrome's anchor IDs");
+        let request = tls_of(profile)
+            .requested_trust_anchors
+            .expect("chrome 150+ sends the trust_anchors extension");
+        assert!(
+            request.is_empty(),
+            "{profile:?} preset sends an empty request",
+        );
     }
 }
