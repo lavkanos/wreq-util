@@ -303,8 +303,7 @@ impl Emulation {
                 weight: 7141,
                 platforms: &[Windows, MacOS, Linux, Android],
                 profiles: &[
-                    Chrome152, Chrome151, Chrome150, Chrome149, Chrome148, Chrome147, Chrome146,
-                    Chrome145, Chrome144, Chrome143,
+                    Chrome149, Chrome148, Chrome147, Chrome146, Chrome145, Chrome144, Chrome143,
                 ],
             },
             Class {

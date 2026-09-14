@@ -18,6 +18,16 @@ See the [crate documentation](https://docs.rs/wreq-util/latest/wreq_util) for mo
 - **Emulation** various mainstream browsers (Chrome, Firefox, Safari, Opera, OkHttp) and their versions.
 - **Delay/JitterDelay**: Add fixed or jittered delays to HTTP [request](https://docs.rs/http/latest/http/request/index.html) with customizable strategies and predicates.
 
+Chrome 150 and newer advertise ML-DSA signature algorithms. Chrome 152
+also enables signature algorithm GREASE and sends an empty `trust_anchors`
+extension by default. Enable `emulation-chromium-pki` to send Chromium's Trust
+Anchor IDs and enable wreq's matching Chromium root store. A custom certificate
+store must trust the requested anchors. The bundled roots do not provide
+Chromium's complete certificate verification policy.
+
+The workspace patches wreq and its TLS backend to pinned development commits
+for this API. Keep these patches when building the unreleased changes.
+
 ## Example
 
 The following example uses the [Tokio](https://tokio.rs) runtime with optional features enabled by adding this to your `Cargo.toml`:

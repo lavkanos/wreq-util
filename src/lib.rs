@@ -7,6 +7,7 @@
 
 #[cfg(feature = "emulation")]
 pub mod emulate;
+#[cfg(feature = "emulation")]
 mod rand;
 pub mod tower;
 

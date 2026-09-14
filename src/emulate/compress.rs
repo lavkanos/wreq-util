@@ -1,8 +1,9 @@
 //! Compression algorithms for TLS 1.3 certificate compression.
 
+use std::io::{self, Write};
+
 use brotli::{CompressorWriter as BrotliEncoder, Decompressor as BrotliDecoder};
 use flate2::{Compression, read::ZlibDecoder, write::ZlibEncoder};
-use std::io::{self, Write};
 use wreq::tls::compress::{CertificateCompressionAlgorithm, CertificateCompressor, Codec};
 use zstd::stream::{Decoder as ZstdDecoder, Encoder as ZstdEncoder};
 

@@ -73,20 +73,7 @@ pub fn header_initializer_with_zstd_priority(
     headers
 }
 
-/// Header order for Chrome 150 and newer.
-///
-/// Chrome 150 moved `accept-language` from just after `accept-encoding` to just
-/// after the `sec-ch-ua` block, which shifts it from position 12 to position 4.
-/// Measured over HTTP/2 against real binaries (Chrome 149.0.7827.155 and
-/// Chrome for Testing 150.0.7828.0 / 151.0.7872.0 / 152.0.7923.0):
-///
-/// ```text
-/// 149  sec-ch-ua … upgrade-insecure-requests … accept-encoding accept-language priority
-/// 150+ sec-ch-ua … accept-language upgrade-insecure-requests … accept-encoding priority
-/// ```
-///
-/// Profiles up to 149 keep [`header_initializer_with_zstd_priority`].
-pub fn header_initializer_with_zstd_priority_v150(
+pub fn header_initializer_chrome152(
     sec_ch_ua: &'static str,
     ua: &'static str,
     emulation_os: Platform,
