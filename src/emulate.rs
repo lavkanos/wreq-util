@@ -60,6 +60,9 @@ define_enum!(
     Chrome147 => ("chrome_147", v147::emulation),
     Chrome148 => ("chrome_148", v148::emulation),
     Chrome149 => ("chrome_149", v149::emulation),
+    Chrome150 => ("chrome_150", v150::emulation),
+    Chrome151 => ("chrome_151", v151::emulation),
+    Chrome152 => ("chrome_152", v152::emulation),
 
     // Edge versions
     Edge101 => ("edge_101", edge101::emulation),
@@ -300,7 +303,8 @@ impl Emulation {
                 weight: 7141,
                 platforms: &[Windows, MacOS, Linux, Android],
                 profiles: &[
-                    Chrome149, Chrome148, Chrome147, Chrome146, Chrome145, Chrome144, Chrome143,
+                    Chrome152, Chrome151, Chrome150, Chrome149, Chrome148, Chrome147, Chrome146,
+                    Chrome145, Chrome144, Chrome143,
                 ],
             },
             Class {

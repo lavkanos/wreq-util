@@ -1795,6 +1795,107 @@ mod_generator!(
     ]
 );
 
+// Chrome 150+ has newer TLS extensions that wreq does not currently expose;
+// v132 is the closest available transport preset.
+mod_generator!(
+    v150,
+    v132::build_emulation,
+    header_initializer_with_zstd_priority_v150,
+    [
+        (
+            MacOS,
+            r#""Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150""#,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+        ),
+        (
+            Linux,
+            r#""Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150""#,
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+        ),
+        (
+            Android,
+            r#""Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150""#,
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36"
+        ),
+        (
+            Windows,
+            r#""Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150""#,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
+        ),
+        (
+            IOS,
+            r#""Not;A=Brand";v="8", "Chromium";v="150", "Google Chrome";v="150""#,
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/150.0.0.0 Mobile/15E148 Safari/604.1"
+        )
+    ]
+);
+
+mod_generator!(
+    v151,
+    v132::build_emulation,
+    header_initializer_with_zstd_priority_v150,
+    [
+        (
+            MacOS,
+            r#""Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151""#,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+        ),
+        (
+            Linux,
+            r#""Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151""#,
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+        ),
+        (
+            Android,
+            r#""Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151""#,
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Mobile Safari/537.36"
+        ),
+        (
+            Windows,
+            r#""Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151""#,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36"
+        ),
+        (
+            IOS,
+            r#""Not=A?Brand";v="99", "Google Chrome";v="151", "Chromium";v="151""#,
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/151.0.0.0 Mobile/15E148 Safari/604.1"
+        )
+    ]
+);
+
+mod_generator!(
+    v152,
+    v132::build_emulation,
+    header_initializer_with_zstd_priority_v150,
+    [
+        (
+            MacOS,
+            r#""Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152""#,
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36"
+        ),
+        (
+            Linux,
+            r#""Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152""#,
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36"
+        ),
+        (
+            Android,
+            r#""Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152""#,
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Mobile Safari/537.36"
+        ),
+        (
+            Windows,
+            r#""Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152""#,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36"
+        ),
+        (
+            IOS,
+            r#""Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152""#,
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/152.0.0.0 Mobile/15E148 Safari/604.1"
+        )
+    ]
+);
+
 mod_generator!(
     edge143,
     v132::build_emulation,
