@@ -2,7 +2,7 @@
 
 A collection of utilities to do common things with [wreq](https://github.com/0x676e67/wreq).
 
-[![Crates.io](https://img.shields.io/crates/v/wreq-util.svg?logo=rust)](https://crates.io/crates/wreq-util)
+[![Crates.io](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcrates.io%2Fapi%2Fv1%2Fcrates%2Fwreq-util&query=%24.crate.max_stable_version&prefix=v&label=crates.io&color=orange&logo=rust)](https://crates.io/crates/wreq-util)
 [![GitHub License](https://img.shields.io/github/license/0x676e67/wreq-util)](https://github.com/0x676e67/wreq-util/blob/main/LICENSE)
 [![Discord chat][discord-badge]][discord-url]
 
@@ -18,6 +18,16 @@ See the [crate documentation](https://docs.rs/wreq-util/latest/wreq_util) for mo
 - **Emulation** various mainstream browsers (Chrome, Firefox, Safari, Opera, OkHttp) and their versions.
 - **Delay/JitterDelay**: Add fixed or jittered delays to HTTP [request](https://docs.rs/http/latest/http/request/index.html) with customizable strategies and predicates.
 
+Chrome 150 and newer advertise ML-DSA signature algorithms. Chrome 152 and 153
+also enable signature algorithm GREASE and send an empty `trust_anchors`
+extension by default. Enable `emulation-chromium-pki` to send Chromium's Trust
+Anchor IDs and enable wreq's matching Chromium root store. A custom certificate
+store must trust the requested anchors. The bundled roots do not provide
+Chromium's complete certificate verification policy.
+
+The workspace patches wreq and its TLS backend to pinned development commits
+for this API. Keep these patches when building the unreleased changes.
+
 ## Example
 
 The following example uses the [Tokio](https://tokio.rs) runtime with optional features enabled by adding this to your `Cargo.toml`:
@@ -25,8 +35,8 @@ The following example uses the [Tokio](https://tokio.rs) runtime with optional f
 ```toml
 [dependencies]
 tokio = { version = "1", features = ["full"] }
-wreq = "6.0.0-rc"
-wreq-util = "3.0.0-rc"
+wreq = "0.16"
+wreq-util = "0.2"
 ```
 
 And then the code:

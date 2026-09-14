@@ -131,9 +131,6 @@ macro_rules! header_chrome_accept_encoding {
         );
         $headers.insert(ACCEPT_LANGUAGE, HeaderValue::from_static("en-US,en;q=0.9"));
     };
-    // Chrome 150 moved `accept-language` ahead of `upgrade-insecure-requests`,
-    // so it is no longer emitted next to `accept-encoding`. This arm keeps the
-    // encoding half only; callers for 150+ insert the language header earlier.
     (zstd_only, $headers:expr) => {
         #[cfg(feature = "emulation-compression")]
         $headers.insert(

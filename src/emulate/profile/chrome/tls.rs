@@ -40,16 +40,25 @@ macro_rules! tls_options {
             .curves($curves)
             .alps_use_new_codepoint(true))
     };
-    // Chrome 150+: same as (7) plus ML-DSA sigalgs and the trust_anchors extension.
-    (8, $curves:expr) => {
+    (8, $curves:expr, $sigalgs:expr) => {
         tls_options!(@build ChromeTlsConfig::builder()
             .permute_extensions(true)
             .enable_ech_grease(true)
             .pre_shared_key(true)
             .curves($curves)
-            .alps_use_new_codepoint(true)
-            .sigalgs_list(SIGALGS_LIST_V150)
-            .requested_trust_anchors(true))
+            .sigalgs_list($sigalgs)
+            .alps_use_new_codepoint(true))
+    };
+    (9, $curves:expr) => {
+        tls_options!(@build ChromeTlsConfig::builder()
+            .permute_extensions(true)
+            .enable_ech_grease(true)
+            .pre_shared_key(true)
+            .curves($curves)
+            .sigalgs_list(NEW_SIGALGS_LIST)
+            .trust_anchors(CHROME_TRUST_ANCHORS)
+            .grease_sigalgs_enabled(true)
+            .alps_use_new_codepoint(true))
     };
 }
 
@@ -88,7 +97,7 @@ pub const SIGALGS_LIST: &str = join!(
     "rsa_pkcs1_sha512"
 );
 
-pub const SIGALGS_LIST_V150: &str = join!(
+pub const NEW_SIGALGS_LIST: &str = join!(
     ":",
     "mldsa44",
     "mldsa65",
@@ -103,11 +112,11 @@ pub const SIGALGS_LIST_V150: &str = join!(
     "rsa_pkcs1_sha512"
 );
 
-// The preset always sends an empty trust_anchors request. Chrome's real anchor
-// IDs are installed only by chrome_pki_client_builder, which pairs them with
-// Chrome's roots, so a populated request can never ship without the roots that
-// verify the chain it invites.
-const CHROME_TRUST_ANCHORS: &[u8] = &[];
+// Encoded IDs and wreq's Chromium root store come from the same root set.
+#[cfg(feature = "emulation-chromium-pki")]
+pub(super) const CHROME_TRUST_ANCHORS: &[u8] = &chromium_roots::encoded_trust_anchor_ids();
+#[cfg(not(feature = "emulation-chromium-pki"))]
+pub(super) const CHROME_TRUST_ANCHORS: &[u8] = &[];
 
 pub const CERTIFICATE_COMPRESSORS: &[&'static dyn CertificateCompressor] = &[&BrotliCompressor];
 
@@ -137,8 +146,11 @@ pub struct ChromeTlsConfig {
     #[builder(default = false, setter(into))]
     pre_shared_key: bool,
 
-    #[builder(default = false, setter(into))]
-    requested_trust_anchors: bool,
+    #[builder(default, setter(strip_option))]
+    trust_anchors: Option<&'static [u8]>,
+
+    #[builder(default, setter(strip_option))]
+    grease_sigalgs_enabled: Option<bool>,
 }
 
 impl From<ChromeTlsConfig> for TlsOptions {
@@ -159,8 +171,13 @@ impl From<ChromeTlsConfig> for TlsOptions {
             .alps_use_new_codepoint(val.alps_use_new_codepoint)
             .aes_hw_override(true)
             .certificate_compressors(CERTIFICATE_COMPRESSORS);
-        let builder = if val.requested_trust_anchors {
-            builder.requested_trust_anchors(CHROME_TRUST_ANCHORS)
+        let builder = if let Some(trust_anchors) = val.trust_anchors {
+            builder.trust_anchors(trust_anchors)
+        } else {
+            builder
+        };
+        let builder = if let Some(enabled) = val.grease_sigalgs_enabled {
+            builder.grease_sigalgs_enabled(enabled)
         } else {
             builder
         };
