@@ -112,13 +112,13 @@ pub const NEW_SIGALGS_LIST: &str = join!(
     "rsa_pkcs1_sha512"
 );
 
+pub const CERTIFICATE_COMPRESSORS: &[&'static dyn CertificateCompressor] = &[&BrotliCompressor];
+
 // Encoded IDs and wreq's Chromium root store come from the same root set.
 #[cfg(feature = "emulation-chromium-pki")]
 pub(super) const CHROME_TRUST_ANCHORS: &[u8] = &chromium_roots::encoded_trust_anchor_ids();
 #[cfg(not(feature = "emulation-chromium-pki"))]
 pub(super) const CHROME_TRUST_ANCHORS: &[u8] = &[];
-
-pub const CERTIFICATE_COMPRESSORS: &[&'static dyn CertificateCompressor] = &[&BrotliCompressor];
 
 #[derive(TypedBuilder)]
 pub struct ChromeTlsConfig {
@@ -155,7 +155,7 @@ pub struct ChromeTlsConfig {
 
 impl From<ChromeTlsConfig> for TlsOptions {
     fn from(val: ChromeTlsConfig) -> Self {
-        let builder = TlsOptions::builder()
+        let mut opts = TlsOptions::builder()
             .grease_enabled(true)
             .enable_ocsp_stapling(true)
             .enable_signed_cert_timestamps(true)
@@ -170,17 +170,14 @@ impl From<ChromeTlsConfig> for TlsOptions {
             .alps_protocols([val.alps_protos])
             .alps_use_new_codepoint(val.alps_use_new_codepoint)
             .aes_hw_override(true)
-            .certificate_compressors(CERTIFICATE_COMPRESSORS);
-        let builder = if let Some(trust_anchors) = val.trust_anchors {
-            builder.trust_anchors(trust_anchors)
-        } else {
-            builder
-        };
-        let builder = if let Some(enabled) = val.grease_sigalgs_enabled {
-            builder.grease_sigalgs_enabled(enabled)
-        } else {
-            builder
-        };
-        builder.build()
+            .certificate_compressors(CERTIFICATE_COMPRESSORS)
+            .build();
+        if let Some(trust_anchors) = val.trust_anchors {
+            opts.trust_anchors = Some(trust_anchors.into());
+        }
+        if let Some(enabled) = val.grease_sigalgs_enabled {
+            opts.grease_sigalgs_enabled = Some(enabled);
+        }
+        opts
     }
 }
